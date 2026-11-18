@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel · Brigaderia Belga</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#3d5a27">
+<link rel="icon" href="../assets/img/logo-perfil.webp">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--verde:#3d5a27;--verde-2:#56763a;--verde-esc:#26391a;--limao:#e3e6a6;--limao-2:#f1f2cf;--creme:#f5f1e6;--papel:#fff;--marrom:#4a2b16;--tinta:#22170e;--cinza:#5f5244;--linha:#e3d9c3;--bordo:#7d1a22;--ok:#2f6b2a;--alerta:#9a5b00}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:'Figtree',system-ui,sans-serif;background:var(--creme);color:var(--tinta);font-size:16px;line-height:1.45}
+h1,h2,h3,.fr{font-family:'Fraunces',Georgia,serif;font-weight:600;color:var(--marrom);letter-spacing:-.01em}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--verde)}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;justify-content:center}
+.b-v{background:var(--verde);color:#fff}.b-m{background:var(--marrom);color:#fff}.b-c{background:#fff;color:var(--marrom);border:2px solid var(--linha)}.b-z{background:#1f8f4e;color:#fff}
+input,select,textarea{font:600 15px 'Figtree';padding:9px 11px;border:2px solid var(--linha);border-radius:10px;background:#fff;color:var(--tinta)}
+input:focus,select:focus{outline:none;border-color:var(--verde)}
+.losango{background-color:var(--verde);background-image:repeating-linear-gradient(45deg,transparent 0 33px,rgba(255,255,255,.12) 33px 34px),repeating-linear-gradient(-45deg,transparent 0 33px,rgba(255,255,255,.12) 33px 34px),linear-gradient(45deg,rgba(0,0,0,.09) 25%,transparent 25% 75%,rgba(0,0,0,.09) 75%),linear-gradient(-45deg,rgba(0,0,0,.09) 25%,transparent 25% 75%,rgba(0,0,0,.09) 75%);background-size:auto,auto,96px 96px,96px 96px;background-position:0 0,0 0,0 0,48px 48px}
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+#login form{background:var(--papel);border-radius:22px;padding:30px;width:min(390px,100%);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+#login .logo{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+#login .logo img{width:56px;height:56px;border-radius:50%;border:3px solid var(--verde)}
+#login h1{font-size:28px;line-height:1}
+#login p{color:var(--cinza);margin-top:4px}
+#login label{font-weight:800;font-size:14px;display:block;margin:12px 0 5px}
+#login input{width:100%}
+.demo{background:var(--limao-2);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:14px;font-weight:600;color:var(--verde-esc)}
+#erro{color:#a1111f;font-weight:800;margin-top:10px}
+/* app */
+.lado{position:fixed;left:0;top:0;bottom:0;width:236px;color:#fff;padding:18px 12px;display:flex;flex-direction:column;gap:3px;z-index:20}
+.lado .m{display:flex;gap:10px;align-items:center;padding:4px 8px 18px}
+.lado .m img{width:42px;height:42px;border-radius:50%;border:2px solid var(--limao)}
+.lado .m b{font:700 22px 'Fraunces';display:block;line-height:1;color:#fff}
+.lado .m small{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--limao)}
+.lado button{background:none;border:0;color:#eef0d8;text-align:left;padding:11px 12px;border-radius:12px;font-weight:800;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+.lado button:hover{background:rgba(255,255,255,.1)}
+.lado button.on{background:var(--limao);color:var(--marrom)}
+.lado button i,.mob-tabs i{font-style:normal;background:var(--bordo);color:#fff;border-radius:999px;font-size:12px;padding:1px 8px;margin-left:6px}
+.lado .rod{margin-top:auto;font-size:13px;padding:10px;display:grid;gap:6px}
+.lado .rod a{color:var(--limao)}
+main{margin-left:236px;padding:24px 28px 90px;max-width:1400px}
+.cab{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.cab h2{font-size:32px}
+.cab .dir{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filtro-uni{display:flex;gap:4px;background:#fff;border:2px solid var(--linha);border-radius:12px;padding:3px}
+.filtro-uni button{border:0;background:none;border-radius:9px;padding:7px 11px;font-weight:800;font-size:13.5px;color:var(--cinza)}
+.filtro-uni button.on{background:var(--verde);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kpi{background:#fff;border-radius:16px;padding:16px;border:1px solid var(--linha)}
+.kpi span{font-size:12.5px;font-weight:800;color:var(--cinza);text-transform:uppercase;letter-spacing:.05em}
+.kpi b{display:block;font:700 30px 'Fraunces';color:var(--marrom);margin-top:2px}
+.kpi small{color:var(--cinza);font-weight:600;font-size:13px}
+.card{background:#fff;border-radius:16px;padding:18px;border:1px solid var(--linha);margin-bottom:16px}
+.card h3{font-size:20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g-ag{grid-template-columns:1.25fr 1fr}
+.tab-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--cinza);padding:8px;border-bottom:2px solid var(--linha);white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid #efe7d6;vertical-align:middle}
+.pill{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+.u-barra{background:#e4ecd9;color:var(--verde-esc)}.u-feira{background:#f6e3c8;color:#7a4a0c}.u-pituba{background:#e1e8f5;color:#1d3f74}
+.o-anuncio{background:#fde3e6;color:#9b1c2a}.o-instagram{background:#f3e3fb;color:#6b2490}.o-site{background:var(--limao-2);color:var(--verde-esc)}.o-whatsapp{background:#dcf3e4;color:#1d6b3c}.o-balcao{background:#eee;color:#444}.o-ifood{background:#ffe5e0;color:#b2271a}
+.s-novo{background:#fde3e6;color:#9b1c2a}.s-confirmado{background:#fff0c9;color:#7a5200}.s-producao{background:#e6ddff;color:#4a2fa3}.s-pronto{background:#dcf1d8;color:var(--ok)}.s-entregue{background:#eee;color:#555}
+.s-proposta{background:#fff0c9;color:#7a5200}.s-fechado{background:#dcf1d8;color:var(--ok)}.s-perdido{background:#eee;color:#666}
+.s-conversando{background:#fff0c9;color:#7a5200}.s-virou{background:#dcf1d8;color:var(--ok)}
+.t-natal{background:#7d1a22;color:#fff}.t-caixa{background:#4a2b16;color:#fff}.t-encomenda{background:#56763a;color:#fff}.t-corporativo{background:#1d3f74;color:#fff}
+/* kanban */
+.kan{display:grid;grid-template-columns:repeat(5,minmax(220px,1fr));gap:12px;align-items:start;overflow-x:auto;padding-bottom:6px}
+.col{background:#ebe3d0;border-radius:16px;padding:10px;min-height:180px}
+.col h3{font-size:16px;padding:4px 6px 10px;display:flex;justify-content:space-between}
+.ped{background:#fff;border-radius:13px;padding:12px;margin-bottom:10px;border:1px solid var(--linha)}
+.ped .t{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
+.ped .t b{font:700 16px 'Fraunces';color:var(--marrom)}
+.ped .q{font-weight:800;color:var(--bordo);font-size:14px;margin-top:4px}
+.ped ul{list-style:none;margin:8px 0;font-size:14px}
+.ped li{padding:2px 0}
+.ped li small{display:block;color:var(--cinza);font-size:12.5px}
+.ped .pe{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:6px;flex-wrap:wrap}
+.ped .pe .btn{padding:7px 10px;font-size:13px}
+.chips-f{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chips-f button{border:2px solid var(--linha);background:#fff;border-radius:999px;padding:7px 12px;font-weight:800;font-size:13.5px;color:var(--cinza)}
+.chips-f button.on{border-color:var(--marrom);background:var(--marrom);color:#fff}
+/* agenda */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal .dsem{font-size:12px;font-weight:800;color:var(--cinza);text-align:center;text-transform:uppercase}
+.cal button{background:#fff;border:2px solid var(--linha);border-radius:12px;min-height:74px;padding:6px;text-align:left;display:flex;flex-direction:column;gap:4px;color:var(--tinta)}
+.cal button.fora{opacity:.35}
+.cal button.hoje{border-color:var(--verde)}
+.cal button.sel{background:var(--marrom);color:#fff;border-color:var(--marrom)}
+.cal button.pico{background:#fbe9e9}
+.cal button.sel.pico{background:var(--bordo)}
+.cal .n{font-weight:800;font-size:14px}
+.cal .c{font-size:12px;font-weight:800;background:var(--verde);color:#fff;border-radius:999px;padding:1px 7px;align-self:flex-start}
+.cal .v{font-size:11px;font-weight:700;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+/* produtos */
+.prod{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #efe7d6}
+.prod img{width:52px;height:52px;border-radius:12px;object-fit:cover}
+.prod .n{flex:1;font-weight:700}
+.prod .n small{display:block;color:var(--cinza);font-weight:600}
+.prod.off .n,.prod.off img{opacity:.45}
+.prod input.pr{width:96px;text-align:right}
+.tams{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tams label{font-size:12px;font-weight:800;color:var(--cinza);display:flex;align-items:center;gap:4px}
+.tams input{width:74px;padding:6px 8px;font-size:14px}
+.sw{position:relative;width:48px;height:28px;flex:none}
+.sw input{display:none}
+.sw span{position:absolute;inset:0;background:#cfc3ac;border-radius:999px;cursor:pointer;transition:.2s}
+.sw span:after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+span{background:var(--verde)}
+.sw input:checked+span:after{left:23px}
+.ex{background:#fff3d6;border:1px dashed #d9a54a;color:#6b4300;border-radius:12px;padding:10px 14px;font-weight:700;font-size:14px;margin-bottom:16px}
+.funil{display:grid;gap:8px}
+.funil div{display:flex;align-items:center;gap:10px}
+.funil span{width:120px;font-weight:800;font-size:13.5px;color:var(--cinza)}
+.funil i{display:block;height:30px;border-radius:8px;background:var(--verde-2);min-width:4px}
+.funil b{font-weight:800}
+.vazio{color:var(--cinza);padding:14px 0;font-weight:600}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:var(--tinta);color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;opacity:0;transition:.25s;z-index:90;pointer-events:none}
+.toast.on{opacity:1}
+.mob-top{display:none}
+.mob-tabs{display:none}
+@media (max-width:900px){
+  .lado{display:none}
+  main{margin-left:0;padding:14px 14px 96px}
+  .mob-top{display:flex;align-items:center;gap:10px;padding:10px 14px;color:#fff;position:sticky;top:0;z-index:20}
+  .mob-top img{width:36px;height:36px;border-radius:50%;border:2px solid var(--limao)}
+  .mob-top b{font:700 19px 'Fraunces';color:#fff;display:block;line-height:1}
+  .mob-top small{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--limao)}
+  .mob-top a{margin-left:auto;color:var(--limao);font-weight:800;font-size:14px}
+  .mob-tabs{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--verde-esc);overflow-x:auto;z-index:30;padding:6px}
+  .mob-tabs button{flex:none;background:none;border:0;color:#e9edd0;font-weight:800;font-size:13.5px;padding:11px 12px;border-radius:10px;white-space:nowrap}
+  .mob-tabs button.on{background:var(--limao);color:var(--marrom)}
+  .kpis{grid-template-columns:1fr 1fr}
+  .kpi b{font-size:21px}
+  td.din{white-space:nowrap}
+  .g2{grid-template-columns:1fr}
+  .cab h2{font-size:26px}
+  .cab .dir{margin-left:0;width:100%}
+  .filtro-uni{width:100%;overflow-x:auto}
+  .kan{grid-template-columns:repeat(5,82vw);scroll-snap-type:x mandatory}
+  .col{scroll-snap-align:start}
+  .cal button{min-height:58px;padding:4px}
+  .cal .v{display:none}
+  .esconde-mob{display:none}
+  .prod{flex-wrap:wrap}
+  .prod .n{min-width:60%}
+}
+</style>
+</head>
+<body>
+
+<div id="login" class="losango">
+  <form id="formLogin">
+    <div class="logo"><img src="../assets/img/logo-perfil.webp" alt=""><div><h1>Belga</h1><p>Painel da gerência</p></div></div>
+    <label for="u">Usuário</label><input id="u" autocomplete="username" value="gerente">
+    <label for="s">Senha</label><input id="s" type="password" autocomplete="current-password" placeholder="••••">
+    <button class="btn b-v" style="width:100%;margin-top:16px;padding:14px;font-size:15px">Entrar</button>
+    <div class="demo">Demonstração: usuário <b>gerente</b>, senha <b>belga</b></div>
+    <p id="erro" hidden>Usuário ou senha errados.</p>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <div class="mob-top losango"><img src="../assets/img/logo-perfil.webp" alt=""><div><b>Belga</b><small>Gerência</small></div><a href="../" target="_blank">Ver site ↗</a></div>
+  <aside class="lado losango">
+    <div class="m"><img src="../assets/img/logo-perfil.webp" alt=""><div><b>Belga</b><small>Gerência</small></div></div>
+    <div id="menu"></div>
+    <div class="rod"><a href="../" target="_blank">Ver o site ↗</a><a href="#" id="reset">Restaurar dados da demo</a><a href="#" id="sair">Sair</a></div>
+  </aside>
+  <main id="tela"></main>
+  <nav class="mob-tabs" id="menuMob"></nav>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="../assets/dados.js?v=20261118192056"></script>
+<script>
+(function(){
+const B=window.BELGA; let db=B.carregar();
+const $=s=>document.querySelector(s);
+const brl=B.brl, dBR=B.dataBR;
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fixa=p=>p.replace(/^assets\//,'../assets/');
+let aba='hoje', uniF='todas', tipoF='todos', diaSel=B.hoje(), mesOff=0, prodAba='sabores', cliF='todos';
+const ABAS=[['hoje','Hoje'],['pedidos','Pedidos'],['agenda','Agenda'],['orcamentos','Orçamentos'],['produtos','Produtos'],['clientes','Clientes'],['trafego','Tráfego']];
+const ST=['novo','confirmado','producao','pronto','entregue'];
+const STN={novo:'Novos',confirmado:'Confirmados',producao:'Em produção',pronto:'Pronto p/ retirar',entregue:'Entregues'};
+const ORIG={anuncio:'Anúncio',instagram:'Instagram',site:'Site',whatsapp:'WhatsApp',balcao:'Balcão',ifood:'iFood'};
+const TIPO={caixa:'Caixa',encomenda:'Encomenda',natal:'Natal',corporativo:'Corporativo'};
+const uniNome=id=>(db.unidades.find(u=>u.id===id)||{}).curta||id;
+const pU=id=>`<span class="pill u-${id}">${esc(uniNome(id))}</span>`;
+const pO=o=>`<span class="pill o-${o}">${esc(ORIG[o]||o)}</span>`;
+const totalPed=p=>p.itens.reduce((a,i)=>a+i.preco*i.qtd,0);
+const naUni=x=>uniF==='todas'||x.unidade===uniF;
+const diasEntre=(a,b)=>Math.round((new Date(b+'T12:00')-new Date(a+'T12:00'))/864e5);
+const zap=(tel,msg)=>'https://wa.me/55'+tel.replace(/\D/g,'').replace(/^55/,'')+'?text='+encodeURIComponent(msg);
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2000)}
+function salvar(){B.salvar(db)}
+
+/* login */
+$('#formLogin').addEventListener('submit',e=>{e.preventDefault();if($('#u').value.trim().toLowerCase()==='gerente'&&$('#s').value==='belga'){try{sessionStorage.setItem('belga-ok','1')}catch(_){}abrir()}else $('#erro').hidden=false});
+function abrir(){$('#login').hidden=true;$('#app').hidden=false;render()}
+$('#sair').addEventListener('click',e=>{e.preventDefault();try{sessionStorage.removeItem('belga-ok')}catch(_){}location.reload()});
+$('#reset').addEventListener('click',e=>{e.preventDefault();if(confirm('Restaurar os dados de exemplo da demo?')){db=B.resetar();render();toast('Dados da demo restaurados')}});
+try{if(sessionStorage.getItem('belga-ok'))abrir()}catch(_){}
+
+function menu(){
+  const novos=db.pedidos.filter(p=>p.status==='novo'&&naUni(p)).length, orc=db.orcamentos.filter(o=>o.status==='novo'&&naUni(o)).length;
+  const badge={pedidos:novos,orcamentos:orc};
+  const h=ABAS.map(([k,n])=>`<button class="${k===aba?'on':''}" data-aba="${k}">${n}${badge[k]?`<i>${badge[k]}</i>`:''}</button>`).join('');
+  $('#menu').innerHTML=h;$('#menuMob').innerHTML=h;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-aba]');if(b){aba=b.dataset.aba;render();window.scrollTo(0,0)}});
+function filtroUni(){return `<div class="filtro-uni">${[['todas','Todas']].concat(db.unidades.map(u=>[u.id,u.curta])).map(([k,n])=>`<button data-uni="${k}" class="${k===uniF?'on':''}">${n}</button>`).join('')}</div>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-uni]');if(b){uniF=b.dataset.uni;render()}});
+function cab(t,extra,semFiltro){return `<div class="cab"><h2>${t}</h2><div class="dir">${extra||''}${semFiltro?'':filtroUni()}</div></div>`}
+
+function render(){menu();({hoje,pedidos,agenda,orcamentos,produtos,clientes,trafego})[aba]()}
+
+/* HOJE */
+function hoje(){
+  const h=B.hoje(), ped=db.pedidos.filter(naUni);
+  const deHoje=ped.filter(p=>p.data===h&&p.status!=='entregue');
+  const semana=ped.filter(p=>{const d=diasEntre(h,p.data);return d>=0&&d<7&&p.status!=='entregue'});
+  const orcNovos=db.orcamentos.filter(o=>o.status==='novo'&&naUni(o));
+  const natal=ped.filter(p=>p.tipo==='natal'&&p.status!=='entregue');
+  const cli=db.clientes.filter(c=>uniF==='todas'||c.unidade===uniF);
+  const md=h.slice(5);
+  const aniv=cli.filter(c=>{if(!c.aniversario)return false;const d=diasEntre(h,h.slice(0,4)+'-'+c.aniversario);return d>=0&&d<=7}).sort((a,b)=>a.aniversario.localeCompare(b.aniversario));
+  const sumidos=cli.filter(c=>diasEntre(c.ultimo,h)>=30).sort((a,b)=>a.ultimo.localeCompare(b.ultimo)).slice(0,5);
+  $('#tela').innerHTML=cab('Hoje · '+dBR(h))+`
+  <div class="kpis">
+    <div class="kpi"><span>Retiradas hoje</span><b>${deHoje.length}</b><small>${brl(deHoje.reduce((a,p)=>a+totalPed(p),0))}</small></div>
+    <div class="kpi"><span>Próximos 7 dias</span><b>${semana.length}</b><small>${brl(semana.reduce((a,p)=>a+totalPed(p),0))} em encomendas</small></div>
+    <div class="kpi"><span>Encomendas de Natal</span><b>${natal.length}</b><small>${brl(natal.reduce((a,p)=>a+totalPed(p),0))} vendidos</small></div>
+    <div class="kpi"><span>Orçamentos novos</span><b>${orcNovos.length}</b><small>festas e empresas</small></div>
+  </div>
+  <div class="g2">
+    <div class="card"><h3>Para entregar hoje</h3>${deHoje.length?deHoje.sort((a,b)=>a.hora.localeCompare(b.hora)).map(p=>`
+      <div class="prod"><div class="n">${esc(p.hora)} · ${esc(p.cliente)}<small>${p.itens.map(i=>i.qtd+'× '+esc(i.nome)).join(' · ')}</small></div>${pU(p.unidade)} <span class="pill s-${p.status}">${STN[p.status]}</span>
+      ${p.status!=='entregue'?`<button class="btn b-v" data-av="${p.id}">${p.status==='pronto'?'Entregue':'Avançar →'}</button>`:''}</div>`).join(''):'<p class="vazio">Nenhuma retirada marcada para hoje.</p>'}</div>
+    <div class="card"><h3>Orçamentos esperando resposta</h3>${orcNovos.length?orcNovos.map(o=>`
+      <div class="prod"><div class="n">${esc(o.tipo)} · ${esc(o.qtd)} ${/empresa|fim de ano/i.test(o.tipo)?'unid.':'pessoas'}<small>${esc(o.nome)}${o.empresa?' · '+esc(o.empresa):''} · evento ${dBR(o.data)}</small></div>${pO(o.origem)}
+      <a class="btn b-z" target="_blank" rel="noopener" href="${zap(o.tel,'Olá, '+o.nome.split(' ')[0]+'! Aqui é da Belga 🍫 Recebemos seu pedido de orçamento ('+o.tipo+'). Posso te mandar as opções?')}">Responder</a></div>`).join(''):'<p class="vazio">Tudo respondido.</p>'}</div>
+  </div>
+  <div class="g2">
+    <div class="card"><h3>Aniversariantes da semana 🎂</h3>${aniv.length?aniv.map(c=>`<div class="prod"><div class="n">${esc(c.nome)}<small>${c.aniversario.split('-').reverse().join('/')} · ${c.pedidos} pedidos · ${brl(c.total)}</small></div>${pU(c.unidade)}
+      <a class="btn b-z" target="_blank" rel="noopener" href="${zap(c.tel,'Oi, '+c.nome.split(' ')[0]+'! Feliz aniversário da equipe da Belga 🎂 Seu brigadeiro de presente está esperando na loja esta semana.')}">Parabéns</a></div>`).join(''):'<p class="vazio">Ninguém faz aniversário nos próximos 7 dias.</p>'}</div>
+    <div class="card"><h3>Chamar de volta (30+ dias sem pedir)</h3>${sumidos.length?sumidos.map(c=>`<div class="prod"><div class="n">${esc(c.nome)}<small>último pedido há ${diasEntre(c.ultimo,h)} dias · ${c.pedidos} pedidos</small></div>
+      <a class="btn b-z" target="_blank" rel="noopener" href="${zap(c.tel,'Oi, '+c.nome.split(' ')[0]+'! Saudade de você na Belga 🍫 O Natal à Mesa já está com encomendas abertas. Quer que eu te mande as opções?')}">Chamar</a></div>`).join(''):'<p class="vazio">Nenhum cliente sumido.</p>'}</div>
+  </div>`;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-av]');if(!b)return;const p=db.pedidos.find(x=>x.id===b.dataset.av);const i=ST.indexOf(p.status);if(i<ST.length-1){p.status=ST[i+1];salvar();render();toast(p.id+' → '+STN[p.status])}});
+
+/* PEDIDOS */
+function pedidos(){
+  const lista=db.pedidos.filter(p=>naUni(p)&&(tipoF==='todos'||p.tipo===tipoF));
+  const f=`<div class="chips-f">${[['todos','Todos']].concat(Object.entries(TIPO)).map(([k,n])=>`<button data-tipo="${k}" class="${k===tipoF?'on':''}">${n}</button>`).join('')}</div>`;
+  $('#tela').innerHTML=cab('Pedidos e encomendas')+f+`<div class="kan">${ST.map(s=>{const ps=lista.filter(p=>p.status===s).sort((a,b)=>(a.data+a.hora).localeCompare(b.data+b.hora));
+    return `<div class="col"><h3>${STN[s]}<span>${ps.length}</span></h3>${ps.map(cardPed).join('')||'<p class="vazio" style="padding:6px">—</p>'}</div>`}).join('')}</div>`;
+}
+function cardPed(p){
+  const d=diasEntre(B.hoje(),p.data), quando=d===0?'Hoje':d===1?'Amanhã':d<0?dBR(p.data):dBR(p.data)+' · em '+d+' dias';
+  return `<div class="ped"><div class="t"><b>${p.id}</b><span class="pill t-${p.tipo}">${TIPO[p.tipo]||p.tipo}</span></div>
+  <div style="font-weight:800;margin-top:4px">${esc(p.cliente)}</div>
+  <div class="q">${p.modo==='entrega'?'🛵 Entrega':'🏬 Retirada'} · ${quando} · ${esc(p.hora)}</div>
+  <ul>${p.itens.map(i=>`<li>${i.qtd}× ${esc(i.nome)}${i.detalhe&&p.tipo==='caixa'?`<small>${esc(i.detalhe)}</small>`:''}</li>`).join('')}</ul>
+  ${p.obs?`<div style="font-size:13px;color:var(--cinza);margin-bottom:6px">📝 ${esc(p.obs)}</div>`:''}
+  <div style="display:flex;gap:5px;flex-wrap:wrap">${pU(p.unidade)}${pO(p.origem)}</div>
+  <div class="pe"><b class="fr">${brl(totalPed(p))}</b><span style="display:flex;gap:6px">
+  <a class="btn b-c" target="_blank" rel="noopener" href="${zap(p.tel,'Olá, '+p.cliente.split(' ')[0]+'! Aqui é da Belga 🍫 Sobre o seu pedido '+p.id+'…')}" title="WhatsApp">💬</a>
+  ${p.status!=='entregue'?`<button class="btn b-v" data-av="${p.id}">${p.status==='pronto'?'Entregue ✓':'Avançar →'}</button>`:''}</span></div></div>`;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tipo]');if(b&&aba==='pedidos'){tipoF=b.dataset.tipo;render()}});
+
+/* AGENDA */
+function agenda(){
+  const base=new Date();base.setDate(1);base.setMonth(base.getMonth()+mesOff);
+  const ano=base.getFullYear(), mes=base.getMonth();
+  const nm=base.toLocaleDateString('pt-BR',{month:'long'}), nomeMes=nm.charAt(0).toUpperCase()+nm.slice(1)+' '+ano;
+  const ini=new Date(ano,mes,1-new Date(ano,mes,1).getDay());
+  const ped=db.pedidos.filter(p=>naUni(p)&&p.status!=='entregue');
+  const orc=db.orcamentos.filter(o=>naUni(o)&&o.status==='fechado');
+  let cel='';
+  for(let i=0;i<42;i++){const d=new Date(ini);d.setDate(ini.getDate()+i);const iso=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const ps=ped.filter(p=>p.data===iso), os=orc.filter(o=>o.data===iso), n=ps.length+os.length, v=ps.reduce((a,p)=>a+totalPed(p),0)+os.reduce((a,o)=>a+o.valor,0);
+    const pico=/-12-(2[0-4]|3[01])$/.test(iso);
+    cel+=`<button data-dia="${iso}" class="${d.getMonth()!==mes?'fora':''} ${iso===B.hoje()?'hoje':''} ${iso===diaSel?'sel':''} ${pico?'pico':''}"><span class="n">${d.getDate()}</span>${n?`<span class="c">${n}</span><span class="v">${brl(v)}</span>`:''}</button>`;}
+  const doDia=ped.filter(p=>p.data===diaSel).sort((a,b)=>a.hora.localeCompare(b.hora));
+  const orcDia=orc.filter(o=>o.data===diaSel);
+  const prox=ped.filter(p=>p.data>=B.hoje()).sort((a,b)=>(a.data+a.hora).localeCompare(b.data+b.hora)).slice(0,8);
+  // produção: soma de brigadeiros e tortas do dia
+  $('#tela').innerHTML=cab('Agenda de entregas',`<button class="btn b-c" data-mes="-1">‹</button><b style="min-width:150px;text-align:center">${nomeMes}</b><button class="btn b-c" data-mes="1">›</button>`)+`
+  <div class="g2 g-ag">
+    <div class="card"><div class="cal">${['dom','seg','ter','qua','qui','sex','sáb'].map(x=>`<div class="dsem">${x}</div>`).join('')}${cel}</div>
+      <p style="font-size:13px;color:var(--cinza);margin-top:10px">Dias de 20 a 31/12 em vermelho: pico de Natal e Réveillon. O número verde é a quantidade de entregas.</p></div>
+    <div>
+      <div class="card"><h3>${dBR(diaSel)} · ${new Date(diaSel+'T12:00').toLocaleDateString('pt-BR',{weekday:'long'})}</h3>
+      ${doDia.length||orcDia.length?doDia.map(p=>`<div class="prod"><div class="n">${esc(p.hora)} · ${esc(p.cliente)} <span class="pill t-${p.tipo}">${TIPO[p.tipo]}</span><small>${p.itens.map(i=>i.qtd+'× '+esc(i.nome)).join(' · ')}</small></div>${pU(p.unidade)}<span class="pill s-${p.status}">${STN[p.status]}</span></div>`).join('')+
+        orcDia.map(o=>`<div class="prod"><div class="n">Evento · ${esc(o.tipo)}<small>${esc(o.nome)} · ${o.qtd} · ${brl(o.valor)}</small></div>${pU(o.unidade)}</div>`).join(''):'<p class="vazio">Nada marcado neste dia.</p>'}</div>
+      <div class="card"><h3>Próximas entregas</h3>${prox.map(p=>`<div class="prod"><div class="n">${dBR(p.data)} ${esc(p.hora)} · ${esc(p.cliente)}<small>${p.itens.map(i=>i.qtd+'× '+esc(i.nome)).join(' · ')}</small></div>${pU(p.unidade)}</div>`).join('')||'<p class="vazio">Sem entregas futuras.</p>'}</div>
+    </div>
+  </div>`;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-dia]');if(b){diaSel=b.dataset.dia;agenda()}const m=e.target.closest('[data-mes]');if(m){mesOff+=+m.dataset.mes;agenda()}});
+
+/* ORÇAMENTOS */
+function orcamentos(){
+  const l=db.orcamentos.filter(naUni);
+  const SO=['novo','proposta','fechado','perdido'], SN={novo:'Novo',proposta:'Proposta enviada',fechado:'Fechado',perdido:'Perdido'};
+  const fech=l.filter(o=>o.status==='fechado');
+  $('#tela').innerHTML=cab('Festas e empresas')+`
+  <div class="kpis">
+    <div class="kpi"><span>Pedidos de orçamento</span><b>${l.length}</b></div>
+    <div class="kpi"><span>Em aberto</span><b>${l.filter(o=>o.status==='novo'||o.status==='proposta').length}</b></div>
+    <div class="kpi"><span>Fechados</span><b>${fech.length}</b><small>${brl(fech.reduce((a,o)=>a+o.valor,0))}</small></div>
+    <div class="kpi"><span>Vindos de anúncio</span><b>${l.filter(o=>o.origem==='anuncio').length}</b></div>
+  </div>
+  <div class="card tab-wrap"><table><thead><tr><th>Pedido</th><th>Evento</th><th>Data</th><th>Qtd.</th><th>Quer</th><th>Origem</th><th>Valor</th><th>Status</th><th></th></tr></thead><tbody>
+  ${l.map(o=>`<tr><td><b>${esc(o.nome)}</b>${o.empresa?'<br><small>'+esc(o.empresa)+'</small>':''}<br>${pU(o.unidade)}</td><td>${esc(o.tipo)}</td><td>${dBR(o.data)}</td><td>${o.qtd}</td>
+  <td style="max-width:200px;font-size:13.5px">${esc(o.itens.join(', '))}${o.obs?'<br><small style="color:var(--cinza)">'+esc(o.obs)+'</small>':''}</td><td>${pO(o.origem)}${o.campanha?'<br><small style="color:var(--cinza)">'+esc(o.campanha)+'</small>':''}</td>
+  <td><input style="width:100px" type="number" min="0" value="${o.valor||''}" placeholder="R$" data-ov="${o.id}"></td>
+  <td><select data-os="${o.id}">${SO.map(s=>`<option value="${s}" ${s===o.status?'selected':''}>${SN[s]}</option>`).join('')}</select></td>
+  <td><a class="btn b-z" target="_blank" rel="noopener" href="${zap(o.tel,'Olá, '+o.nome.split(' ')[0]+'! Aqui é da Belga 🍫 Sobre o orçamento '+o.id+' ('+o.tipo+')…')}">💬</a></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+document.addEventListener('change',e=>{
+  const s=e.target.closest('[data-os]');if(s){db.orcamentos.find(o=>o.id===s.dataset.os).status=s.value;salvar();orcamentos();menu();toast('Status atualizado')}
+  const v=e.target.closest('[data-ov]');if(v){db.orcamentos.find(o=>o.id===v.dataset.ov).valor=+v.value||0;salvar();toast('Valor salvo')}
+});
+
+/* PRODUTOS */
+function produtos(){
+  const abas=[['sabores','Brigadeiros'],['natal','Natal à Mesa'],['tortas','Tortas inteiras'],['doces','Bolos e doces']];
+  let corpo='';
+  if(prodAba==='tortas'){
+    corpo=db.tortas.map(t=>`<div class="prod ${t.ativo?'':'off'}"><img src="${fixa(t.foto)}" alt=""><div class="n">${esc(t.nome)}<small>${esc(t.desc)}</small>
+      <div class="tams">${B.TAM.map(k=>`<label>${k}<input type="number" step="1" value="${t.precos[k]||''}" data-tp="${t.id}|${k}"></label>`).join('')}</div></div>
+      <label class="sw" title="Disponível no site"><input type="checkbox" ${t.ativo?'checked':''} data-on="tortas|${t.id}"><span></span></label></div>`).join('');
+  }else{
+    const lista=db[prodAba];
+    corpo=lista.map(p=>`<div class="prod ${p.ativo?'':'off'}"><img src="${fixa(p.foto)}" alt=""><div class="n">${esc(p.nome)}<small>${p.ativo?'No site':'Pausado: some do site'}</small></div>
+      <input class="pr" type="number" step="0.5" value="${p.preco}" data-pp="${prodAba}|${p.id}" aria-label="Preço de ${esc(p.nome)}">
+      <label class="sw" title="Disponível no site"><input type="checkbox" ${p.ativo?'checked':''} data-on="${prodAba}|${p.id}"><span></span></label></div>`).join('');
+  }
+  $('#tela').innerHTML=cab('Produtos e sabores','',true)+`
+  <div class="chips-f">${abas.map(([k,n])=>`<button data-pa="${k}" class="${k===prodAba?'on':''}">${n}</button>`).join('')}</div>
+  <div class="card"><p style="color:var(--cinza);margin-bottom:6px;font-size:14.5px">Preço e disponibilidade mudam o site na hora. Acabou um sabor? Desligue e ele aparece como "indisponível hoje" no monte sua caixa.</p>${corpo}</div>
+  <div class="card"><h3>Antecedência das encomendas</h3><div class="prod"><div class="n">Dias mínimos entre o pedido e a retirada<small>O calendário do site só deixa marcar a partir desse prazo</small></div><input class="pr" type="number" min="0" max="15" value="${db.prazoEncomenda}" id="prazo"></div></div>`;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pa]');if(b){prodAba=b.dataset.pa;produtos()}});
+document.addEventListener('change',e=>{
+  const on=e.target.closest('[data-on]');if(on){const[g,id]=on.dataset.on.split('|');const p=db[g].find(x=>x.id===id);p.ativo=on.checked;salvar();produtos();toast(p.nome+(p.ativo?' voltou ao site':' pausado'))}
+  const pp=e.target.closest('[data-pp]');if(pp){const[g,id]=pp.dataset.pp.split('|');const p=db[g].find(x=>x.id===id);p.preco=+pp.value||0;salvar();toast('Preço de '+p.nome+': '+brl(p.preco))}
+  const tp=e.target.closest('[data-tp]');if(tp){const[id,k]=tp.dataset.tp.split('|');const t=db.tortas.find(x=>x.id===id);if(+tp.value)t.precos[k]=+tp.value;else delete t.precos[k];salvar();toast('Torta '+t.nome+' '+k+' salva')}
+  if(e.target.id==='prazo'){db.prazoEncomenda=+e.target.value||0;salvar();toast('Antecedência: '+db.prazoEncomenda+' dias')}
+});
+
+/* CLIENTES */
+function clientes(){
+  const h=B.hoje(), mes=h.slice(5,7);
+  let l=db.clientes.filter(c=>uniF==='todas'||c.unidade===uniF);
+  if(cliF==='recompra')l=l.filter(c=>diasEntre(c.ultimo,h)>=30);
+  if(cliF==='aniv')l=l.filter(c=>c.aniversario&&c.aniversario.slice(0,2)===mes);
+  if(cliF==='fieis')l=l.filter(c=>c.pedidos>=4);
+  l=[...l].sort((a,b)=>b.total-a.total);
+  const todos=db.clientes.filter(c=>uniF==='todas'||c.unidade===uniF);
+  const rec=todos.filter(c=>c.pedidos>1).length;
+  $('#tela').innerHTML=cab('Clientes')+`
+  <div class="kpis">
+    <div class="kpi"><span>Clientes</span><b>${todos.length}</b></div>
+    <div class="kpi"><span>Compraram 2+ vezes</span><b>${todos.length?Math.round(rec/todos.length*100):0}%</b><small>taxa de recompra</small></div>
+    <div class="kpi"><span>Ticket médio</span><b>${brl(todos.reduce((a,c)=>a+c.total,0)/Math.max(1,todos.reduce((a,c)=>a+c.pedidos,0)))}</b></div>
+    <div class="kpi"><span>Aniversariam no mês</span><b>${todos.filter(c=>c.aniversario&&c.aniversario.slice(0,2)===mes).length}</b></div>
+  </div>
+  <div class="chips-f">${[['todos','Todos'],['recompra','Sem pedir há 30+ dias'],['aniv','Aniversário este mês'],['fieis','Fiéis (4+ pedidos)']].map(([k,n])=>`<button data-cf="${k}" class="${k===cliF?'on':''}">${n}</button>`).join('')}</div>
+  <div class="card tab-wrap"><table><thead><tr><th>Cliente</th><th class="esconde-mob">Unidade</th><th>Pedidos</th><th>Total</th><th>Último pedido</th><th class="esconde-mob">Aniversário</th><th class="esconde-mob">Veio por</th><th></th></tr></thead><tbody>
+  ${l.map(c=>{const d=diasEntre(c.ultimo,h);return `<tr><td><b>${esc(c.nome)}</b><br><small style="color:var(--cinza)">${esc(c.tel)}</small></td><td class="esconde-mob">${pU(c.unidade)}</td><td>${c.pedidos}</td><td class="din">${brl(c.total)}</td>
+  <td>${d===0?'hoje':'há '+d+' dias'}${d>=30?' <span class="pill s-novo">voltar</span>':''}</td><td class="esconde-mob">${c.aniversario?c.aniversario.split('-').reverse().join('/'):'—'}</td><td class="esconde-mob">${pO(c.origem)}</td>
+  <td><a class="btn b-z" target="_blank" rel="noopener" href="${zap(c.tel,'Oi, '+c.nome.split(' ')[0]+'! Aqui é da Belga 🍫 ')}">💬</a></td></tr>`}).join('')||'<tr><td colspan="8" class="vazio">Nenhum cliente neste filtro.</td></tr>'}
+  </tbody></table></div>`;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-cf]');if(b){cliF=b.dataset.cf;clientes()}});
+
+/* TRÁFEGO */
+function trafego(){
+  const c=db.campanhas, s=k=>c.reduce((a,x)=>a+x[k],0);
+  const verba=s('verba'),leads=s('leads'),ped=s('pedidos'),rec=s('receita'),cliq=s('cliques'),imp=s('impressoes');
+  const max=imp;
+  const LS={novo:'Novo',conversando:'Conversando','virou pedido':'Virou pedido',perdido:'Perdido'};
+  $('#tela').innerHTML=cab('Tráfego pago','',true)+`
+  <div class="ex">EXEMPLO · números ilustrativos. No projeto real, cada anúncio leva para o site com UTM (ex.: <code>?utm_source=meta&utm_campaign=natal</code>). O pedido e o orçamento que chegam por esse link entram aqui marcados como "Anúncio", e o investimento vem do Gerenciador da Meta.</div>
+  <div class="kpis">
+    <div class="kpi"><span>Investido (mês)</span><b>${brl(verba)}</b></div>
+    <div class="kpi"><span>Leads no WhatsApp/site</span><b>${leads}</b><small>${brl(verba/leads)} por lead</small></div>
+    <div class="kpi"><span>Viraram pedido</span><b>${ped}</b><small>${Math.round(ped/leads*100)}% dos leads</small></div>
+    <div class="kpi"><span>Receita dos anúncios</span><b>${brl(rec)}</b><small>retorno de ${(rec/verba).toFixed(1).replace('.',',')}× a verba</small></div>
+  </div>
+  <div class="g2">
+    <div class="card"><h3>Funil do mês</h3><div class="funil">
+      ${[['Impressões',imp],['Cliques',cliq],['Leads',leads],['Pedidos',ped]].map(([n,v])=>`<div><span>${n}</span><i style="width:${Math.max(2,Math.sqrt(v/max)*100)}%"></i><b>${v.toLocaleString('pt-BR')}</b></div>`).join('')}
+    </div><p style="font-size:12.5px;color:var(--cinza);margin-top:8px">Barras em escala de raiz para caber na tela.</p></div>
+    <div class="card tab-wrap"><h3>Campanhas</h3><table><thead><tr><th>Campanha</th><th>Verba</th><th>Leads</th><th>Pedidos</th><th>Receita</th></tr></thead><tbody>
+      ${c.map(x=>`<tr><td><b>${esc(x.nome)}</b><br><small style="color:var(--cinza)">${esc(x.objetivo)}</small></td><td>${brl(x.verba)}</td><td>${x.leads}<br><small>${brl(x.verba/x.leads)}/lead</small></td><td>${x.pedidos}</td><td><b>${brl(x.receita)}</b></td></tr>`).join('')}
+    </tbody></table></div>
+  </div>
+  <div class="card tab-wrap"><h3>Leads que chegaram dos anúncios</h3><table><thead><tr><th>Quando</th><th>Lead</th><th>Campanha / anúncio</th><th>Quer</th><th>Status</th><th>Valor</th></tr></thead><tbody>
+    ${db.leads.map((l,i)=>`<tr><td style="white-space:nowrap">${dBR(l.quando.slice(0,10))} ${l.quando.slice(11)}</td><td><b>${esc(l.nome)}</b><br><small style="color:var(--cinza)">${esc(l.tel)}</small></td>
+    <td>${esc(l.campanha)}<br><small style="color:var(--cinza)">${esc(l.anuncio)}</small></td><td>${esc(l.interesse)}</td>
+    <td><select data-ls="${i}">${Object.entries(LS).map(([k,n])=>`<option value="${k}" ${k===l.status?'selected':''}>${n}</option>`).join('')}</select></td><td>${l.valor?brl(l.valor):'—'}</td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+document.addEventListener('change',e=>{const s=e.target.closest('[data-ls]');if(s){db.leads[+s.dataset.ls].status=s.value;salvar();toast('Lead atualizado')}});
+
+window.addEventListener('storage',e=>{if(e.key==='belga-v1'&&!$('#app').hidden){db=B.carregar();render()}});
+})();
+</script>
+</body>
+</html>
