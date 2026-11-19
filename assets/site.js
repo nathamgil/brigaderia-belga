@@ -5,6 +5,7 @@
   const $ = (s, el) => (el || document).querySelector(s);
   const $$ = (s, el) => [...(el || document).querySelectorAll(s)];
   const brl = B.brl;
+  const on = (sel, ev, fn) => { const el = document.querySelector(sel); if (el) el.addEventListener(ev, fn); };
   const esc = (t) => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
                set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -67,7 +68,7 @@
   function valorCaixa() { return Object.entries(escolha).reduce((a, [id, q]) => { const s = db.sabores.find(x => x.id === id); return a + (s ? s.preco * q : 0); }, 0); }
   function renderCaixa() { renderTamanhos(); renderSabores(); renderResumo(); }
 
-  $('#tamanhos').addEventListener('click', e => {
+  on('#tamanhos', 'click', e => {
     const b = e.target.closest('button'); if (!b) return;
     tamanho = +b.dataset.n;
     // se passou do novo tamanho, tira do fim
@@ -75,14 +76,14 @@
     for (const id of Object.keys(escolha).reverse()) { while (n > tamanho && escolha[id] > 0) { escolha[id]--; n--; } }
     renderCaixa();
   });
-  $('#sabores').addEventListener('click', e => {
+  on('#sabores', 'click', e => {
     const b = e.target.closest('button'); if (!b || b.disabled) return;
     const id = b.dataset.s;
     if (b.classList.contains('mais') && somaCaixa() < tamanho) escolha[id] = (escolha[id] || 0) + 1;
     if (b.classList.contains('menos') && escolha[id]) escolha[id]--;
     renderSabores(); renderResumo();
   });
-  $('#resumoCaixa').addEventListener('click', e => {
+  on('#resumoCaixa', 'click', e => {
     if (e.target.id === 'sortir') {
       const ativos = db.sabores.filter(s => s.ativo);
       let i = 0;
@@ -129,8 +130,8 @@
       $('#gradeEnc').innerHTML = db.doces.filter(p => p.ativo).map(p => cardProduto(p, 'doce')).join('');
     }
   }
-  $('#abasEnc').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { abaEnc = b.dataset.aba; renderEnc(); } });
-  $('#gradeEnc').addEventListener('change', e => {
+  on('#abasEnc', 'click', e => { const b = e.target.closest('button'); if (b) { abaEnc = b.dataset.aba; renderEnc(); } });
+  on('#gradeEnc', 'change', e => {
     const s = e.target.closest('select[data-torta]'); if (!s) return;
     const t = db.tortas.find(x => x.id === s.dataset.torta);
     $(`[data-preco="${t.id}"]`).innerHTML = `<small>Tamanho ${s.value}</small>${brl(t.precos[s.value])}`;
@@ -155,16 +156,17 @@
 
   /* ---------------- unidades ---------------- */
   function renderLojas() {
+    const z = $('#zapFlut'); if (z) z.href = zapLink(unidade, 'Olá! Vim pelo site da Belga e quero fazer um pedido.');
+    const sel = $('#evUnid'); if (sel) sel.innerHTML = db.unidades.filter(x => x.retirada).map(x => `<option value="${x.id}" ${x.id === unidade ? 'selected' : ''}>${esc(x.nome)}</option>`).join('');
+    if (!$('#listaLojas')) return;
     $('#listaLojas').innerHTML = db.unidades.map(u => `<button class="loja-item ${u.id === unidade ? 'on' : ''}" data-u="${u.id}">
       <b>${esc(u.nome)}</b><span>${esc(u.cidade)}</span><span>${esc(u.endereco)}</span><span>${esc(u.horario)}</span>
       <span class="acoes">${u.whatsapp ? `<a class="btn b-verde" href="${zapLink(u.id, 'Olá! Vim pelo site da Belga.')}" target="_blank" rel="noopener">WhatsApp ${esc(u.fone)}</a>` : ''}${u.ifood ? `<a class="btn b-borda" href="${u.ifood}" target="_blank" rel="noopener">Pedir no iFood</a>` : ''}</span></button>`).join('');
     const u = uni(unidade);
     $('#mapa').innerHTML = u.mapa ? `<iframe title="Mapa da unidade ${esc(u.nome)}" loading="lazy" src="https://www.google.com/maps?q=${encodeURIComponent(u.mapa)}&output=embed"></iframe>`
       : `<div style="padding:30px">📍 Endereço da unidade ${esc(u.nome)} a confirmar.<br><span style="font-weight:600">Por enquanto, os pedidos dessa unidade são pelo iFood.</span></div>`;
-    $('#zapFlut').href = zapLink(unidade, 'Olá! Vim pelo site da Belga e quero fazer um pedido.');
-    const sel = $('#evUnid'); if (sel) sel.innerHTML = db.unidades.filter(x => x.retirada).map(x => `<option value="${x.id}" ${x.id === unidade ? 'selected' : ''}>${esc(x.nome)}</option>`).join('');
   }
-  $('#listaLojas').addEventListener('click', e => {
+  on('#listaLojas', 'click', e => {
     if (e.target.closest('a')) return;
     const b = e.target.closest('[data-u]'); if (!b) return;
     unidade = b.dataset.u; ls.set('belga-unidade', unidade); renderLojas();
@@ -247,35 +249,37 @@
     $('#gavPe').innerHTML = `<a class="btn b-verde" style="width:100%" href="${zapLink(uid, msg)}" target="_blank" rel="noopener">Enviar no WhatsApp</a>`;
   }
 
-  $('#abrirSacola').addEventListener('click', () => { renderSacola(); abrirGaveta(); });
-  $('#fecharSacola').addEventListener('click', fecharGaveta);
-  $('#veu').addEventListener('click', fecharGaveta);
+  on('#abrirSacola', 'click', () => { renderSacola(); abrirGaveta(); });
+  on('#fecharSacola', 'click', fecharGaveta);
+  on('#veu', 'click', fecharGaveta);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharGaveta(); });
-  $('#gaveta').addEventListener('click', e => {
+  on('#gaveta', 'click', e => {
     const q = e.target.closest('[data-q]');
     if (q) { const i = sacola[+q.dataset.i]; i.qtd += +q.dataset.q; if (i.qtd <= 0) sacola.splice(+q.dataset.i, 1); salvarSacola(); renderSacola(); }
     if (e.target.id === 'irCheckout') renderCheckout();
     if (e.target.id === 'voltarSacola') renderSacola();
     if (e.target.id === 'irCaixa') fecharGaveta();
   });
-  $('#gaveta').addEventListener('change', e => { if (e.target.name === 'modo') $('#pEndCampo').hidden = e.target.value !== 'entrega'; });
-  $('#gaveta').addEventListener('submit', e => { if (e.target.id === 'formPedido') enviarPedido(e); });
+  on('#gaveta', 'change', e => { if (e.target.name === 'modo') $('#pEndCampo').hidden = e.target.value !== 'entrega'; });
+  on('#gaveta', 'submit', e => { if (e.target.id === 'formPedido') enviarPedido(e); });
 
   /* ---------------- orçamento de evento ---------------- */
-  const evTipo = $('#evTipo');
+  const evTipo = $('#evTipo') || { value: '', addEventListener() {} };
   function ajustaEvento() {
+    if (!$('#evEmpresaCampo')) return;
     const corp = /empresa|fim de ano/i.test(evTipo.value);
     $('#evEmpresaCampo').hidden = !corp;
     $('#evQtdLabel').textContent = corp ? 'Quantidade (pessoas ou caixas)' : 'Convidados (aprox.)';
   }
   evTipo.addEventListener('change', ajustaEvento);
-  $('#evData').min = B.dia(3);
+  if ($('#evData')) $('#evData').min = B.dia(3);
   document.addEventListener('click', e => {
     const a = e.target.closest('a[data-tipo]'); if (!a) return;
+    if (!$('#formEvento')) return;
     evTipo.value = a.dataset.tipo; ajustaEvento();
     const cx = $('#evItens input[value="Caixas de presente"]'); if (cx) cx.checked = true;
   });
-  $('#formEvento').addEventListener('submit', e => {
+  on('#formEvento', 'submit', e => {
     e.preventDefault();
     const itens = $$('#evItens input:checked').map(i => i.value);
     const o = { id: B.proxId(db.orcamentos, 'O'), tipo: evTipo.value, data: $('#evData').value, qtd: +$('#evQtd').value, nome: $('#evNome').value.trim(), empresa: $('#evEmpresa').value.trim(),
@@ -291,10 +295,18 @@
   });
 
   /* ---------------- menu mobile ---------------- */
-  $('#hamb').addEventListener('click', () => $('#menu').classList.toggle('aberto'));
-  $('#menu').addEventListener('click', e => { if (e.target.closest('a')) $('#menu').classList.remove('aberto'); });
+  on('#hamb', 'click', () => $('#menu').classList.toggle('aberto'));
+  on('#menu', 'click', e => { if (e.target.closest('a')) $('#menu').classList.remove('aberto'); });
 
-  function tudo() { renderCaixa(); renderNatal(); renderEnc(); renderVitrine(); renderLojas(); salvarSacola(); }
+  function tudo() {
+    if ($('#sabores')) renderCaixa();
+    if ($('#gradeNatal')) renderNatal();
+    if ($('#gradeEnc')) renderEnc();
+    if ($('#vitrine')) renderVitrine();
+    renderLojas(); salvarSacola();
+    // página de empresas: já abre com o formulário no modo corporativo
+    if (document.body.dataset.pagina === 'empresas' && $('#evTipo') && !evTipo.value) { evTipo.value = 'Presente de fim de ano'; ajustaEvento(); }
+  }
   tudo();
   // o painel mudou algo em outra aba (sabor pausado, preço): atualiza
   window.addEventListener('storage', e => { if (e.key === 'belga-v1') { db = B.carregar(); tudo(); } });
